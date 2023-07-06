@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Snake and Ladder</title>
+
+    <style>
+      * {
+        box-sizing: border-box;
+        padding: 0;
+        margin: 0;
+      }
+      .wrapper {
+        width: 100%;
+        background: #fff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        overflow: hidden;
+        background: linear-gradient(to right, #feac5e, #c779d0, #4bc0c8);
+      }
+      .gamebox{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+      
+      .diceroll{
+        width: 200px;
+        height: 500px;
+        margin-left: 20px;
+        background: transparent;
+        padding: 20px;
+        box-shadow: inset 1px 1px 6px #0006;
+        display: flex;
+        flex-flow: column;
+        align-items: center;
+        justify-content: space-evenly;
+        border-radius: 30px;
+      }
+      .btn{
+        display: flex;
+        align-items: center;
+        flex-flow: column;
+        justify-content: space-evenly;
+      }
+      .gameboard {
+        width: 500px;
+        height: 500px;
+        background-image: url(ladder.png);
+        background-size: contain;
+        display: flex;
+        flex-flow: row-reverse;
+       flex-wrap: wrap-reverse;
+      }
+      .gameboard .box{
+        display: flex;
+        margin: 0;
+        padding: 0;
+      }
+      .gameboard .box:nth-child(even){
+        flex-flow: row-reverse;
+      }
+      .gameboard span {
+        height: 50px;
+        width: 50px;
+        display: inline;
+        position: relative;
+        transition: all 0.5s;
+      }
+
+
+      .dice{
+        height: 60px;
+        width: 60px;
+      }
+      img{
+        max-width: 100%;
+        display: block;
+        margin: auto auto 15px;
+      }
+
+      button{
+        padding: 8px 20px;
+        background:  linear-gradient(to right, #5ab7c9, #4a569d);
+        color: #fff;
+        border-radius: 30px;
+        margin: 10px auto;
+        cursor: pointer;
+        outline: none;
+        border: 2px solid #5ab7c9 ;
+      }
+
+      .full{
+        position: relative;
+      }
+
+      .full .winningmoment{
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 100%;
+        width: 100%;
+        background: #fff5;
+        text-align: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        backdrop-filter: blur(8px);
+        z-index: 8;
+      }
+
+      .winimg{
+        width: 64px;
+        display: block;
+        margin: 25px auto;
+        height: 64px;
+      }
+
+      .winbox h2{
+          font-size: 34px;
+
+      }
+    
+.hidden{
+  display: none !important;
+}
+
+.turn{
+font-size: 24px;
+font-weight: 600;
+color: #fff;
+}
+.title {
+    font-size: 50px;
+    line-height: 50px;
+    line-break: anywhere;
+    width: 50px;
+    text-align: center;
+    text-transform: uppercase;
+    margin-right: 10px;
+    color: #fff;
+}
+
+.rabit-animal, .turtle-animal{
+  height: 30px;
+  width: 30px;
+  position: absolute;
+  transition: all 1.5s;
+  padding: 0px;
+  margin: 0;
+}
+
+@media (max-width: 765px) {
+  .gamebox{
+    flex-flow: column;
+    justify-content: center;
+    align-items: center;
+  }
+  .gameboard{
+    width: 300px;
+    height: 300px;
+   
+  }
+  .gameboard span{
+    width: 30px;
+    height: 30px;
+  }
+
+
+  .diceroll{
+    flex-flow: row;
+    width: fit-content;
+    height: auto;
+    flex-wrap: wrap;
+    margin-left: auto;
+    margin-top: 25px;
+    padding: 15px 8px;
+  
+  }
+  .btn{
+    width: 100%;
+    margin-top: 15px;
+  }
+
+  .user img{
+    margin-bottom: 5px;
+  }
+
+  .dice {
+    height: 80px;
+    width: 80px;
+}
+  
+.wrapper{
+  overflow: scroll;
+  padding: 30px 2px;
+}
+
+.title{
+  line-break: auto;
+  white-space: nowrap;
+  width: fit-content;
+  margin-bottom: 15px;
+  font-size: 30px;
+  line-height: 42px;
+  margin: 15px auto;
+}
+
+.rabit-animal, .turtle-animal{
+  height: 15px;
+  width: 15px;
+}
+
+
+}
+
+
+
+
+    </style>
+  </head>
+  <body>
+    <div class="wrapper">
+      <div class="gamebox">
+        <div class="title">
+          Race Game
+        </div>
+        <div class="full">        
+        <div class="gameboard"></div>
+        <div class="winningmoment hidden">
+
+          <div class="winbox">
+          <h2>🎉 Winner 🎉</h2>
+
+          <div class="winimg">
+            <img src="r1.png" alt="">
+          </div>
+
+        </div>
+
+        </div>
+      </div>
+
+        <!-- img -->
+            <img src="r1.png" class="rabit-animal" alt="">
+            <img src="t1.png"  class="turtle-animal" alt="">
+
+        <!-- img -->
+
+        <div class="diceroll">
+
+          <div class="user">
+            <img class="userrabit" src="r1.png" alt="">
+               <div class="turn">Rabbit Turn</div>            
+          </div>
+
+          <div class="dice">
+            <img src="1.png" alt="">
+          </div>
+
+          <div class="btn">
+            <button class="spin" >Spin</button>
+            <button class="newbtn">New Game</button>
+
+          </div>
+
+
+
+        </div>
+      </div>
+      
+
+
+    </div>
+
+    <script>
+     let gameboard = document.querySelector(".gameboard");  
+     let winner = document.querySelector(".winningmoment");  
+     let winimg = document.querySelector(".winimg img");  
+
+     let whoturn = document.querySelector(".turn");  
+
+
+     let newbtn = document.querySelector(".newbtn"); 
+     
+     
+     let rabitpos = document.querySelector(".rabit-animal");  
+     let turtpos = document.querySelector(".turtle-animal");  
+
+
+
+
+  
+     let spanitem ="";
+
+     for(let i=1; i<=10; i++){
+      spanitem += "<span></span>" 
+     }
+
+
+     for(let i=1; i<=10; i++){
+      gameboard.innerHTML += "<div class=\"box\">" + spanitem + "</div>";
+     }
+
+     let spantag = gameboard.querySelectorAll("span");
+
+     spantag[0].classList.add("rabit");
+     spantag[0].classList.add("turtles");
+
+
+
+    //  ===================================
+
+        let startpodition =  spantag[0].getBoundingClientRect();
+      
+      // rabbit
+              rabitpos.style.left = startpodition.x + 5 + "px";
+              rabitpos.style.top = startpodition.y + 5 + "px";
+      // turtel
+           
+             turtpos.style.left = startpodition.x + 5 + "px";
+             turtpos.style.top = startpodition.y + 10 + "px";
+
+
+    // =============================
+
+
+     let spin = document.querySelector(".spin");
+
+     let diceimg = document.querySelector(".dice img");
+
+     let userimg = document.querySelector(".user img");
+
+
+
+
+    let value = 0;
+
+    let currentrabit = 0;
+
+    let currentturt = 0;
+
+
+     spin.addEventListener('click',()=>{
+
+       value = Math.floor(Math.random() * 6) + 1;
+
+      diceimg.src = `${value}.png`;
+
+      addclass(value);
+    
+
+     });
+
+// rabit remove
+     function removerabit(){
+      for(let i=0; i< spantag.length; i++){
+      spantag[i].classList.remove("rabit");
+     }
+     }
+// turtles remove
+     function removeturt(){
+      for(let i=0; i< spantag.length; i++){
+      spantag[i].classList.remove("turtles");
+     }
+     }
+
+// add class
+     function addclass(data){
+
+      
+
+      if(userimg.classList.contains("userrabit")){
+
+        whoturn.innerText = "Turtles Turn";
+
+        removerabit();
+
+        currentrabit += data; 
+
+        console.log("rabit " + currentrabit);
+
+        // =====================================================================
+
+        // ladder1
+        if(currentrabit == 4){
+          currentrabit = 57;
+        }
+
+          // ladder2
+          if(currentrabit == 13){
+          currentrabit = 48;
+        }
+
+            // snake 1
+            if(currentrabit == 37){
+          currentrabit = 19;
+        }
+
+             // snake 2
+             if(currentrabit == 50){
+          currentrabit = 9;
+        }
+
+                // ladder 3
+                if(currentrabit == 52){
+          currentrabit = 71;
+        }
+
+                 // ladder 3
+                 if(currentrabit == 63){
+          currentrabit = 82;
+        }
+
+
+              // snake 3
+              if(currentrabit == 75){
+          currentrabit = 53;
+        }
+
+                // snake 4
+                if(currentrabit == 90){
+          currentrabit = 72;
+        }
+
+                   // snake 5
+                   if(currentrabit == 96){
+          currentrabit = 60;
+        }
+
+        // snake 5
+        if(currentrabit > 99){
+          currentrabit = currentrabit - data;
+        }
+
+           // winning moment
+
+           if(currentrabit == 99){
+            currentrabit = 99;
+
+            winning("r1");
+        }
+
+
+  // =====================================================================
+
+        
+        spantag[currentrabit].classList.add("rabit");
+
+// ======================================================
+        let currentpodition =  spantag[currentrabit].getBoundingClientRect();
+      
+      // rabbit
+              rabitpos.style.left = currentpodition.x + 5 + "px";
+              rabitpos.style.top = currentpodition.y + 5 + "px";   
+
+// ======================================================
+
+
+        userimg.classList.remove("userrabit");
+        userimg.src="t1.png";
+
+        
+
+      }
+      else{
+
+        whoturn.innerText = "Rabbit Turn";
+
+
+        removeturt();
+
+        currentturt += data; 
+
+        console.log("turt "+currentturt);
+
+
+                // =====================================================================
+
+        // ladder1
+        if(currentturt == 4){
+          currentturt = 57;
+        }
+
+          // ladder2
+          if(currentturt == 13){
+            currentturt = 48;
+        }
+
+            // snake 1
+            if(currentturt == 37){
+              currentturt = 19;
+        }
+
+             // snake 2
+             if(currentturt == 50){
+              currentturt = 9;
+        }
+
+                // ladder 3
+                if(currentturt == 52){
+                  currentturt = 71;
+        }
+
+                 // ladder 3
+                 if(currentturt == 63){
+                  currentturt = 82;
+        }
+
+
+              // snake 3
+              if(currentturt == 75){
+                currentturt = 53;
+        }
+
+                // snake 4
+                if(currentturt == 90){
+                  currentturt = 72;
+        }
+
+                   // snake 5
+                   if(currentturt == 96){
+                    currentturt = 60;
+        }
+
+        // snake 5
+        if(currentturt > 99){
+          currentturt = currentturt - data;
+        }
+
+
+        // winning moment
+
+        if(currentturt == 99){
+          currentturt = 99;
+
+          winning("t1");
+
+        }
+
+  // =====================================================================
+
+
+          
+
+
+        spantag[currentturt].classList.add("turtles");
+
+
+// ======================================================
+        let currentpodition =  spantag[currentturt].getBoundingClientRect();
+
+        console.log("turt" + currentpodition.x);
+      
+      // turt
+      turtpos.style.left = currentpodition.x + 5 + "px";
+      turtpos.style.top = currentpodition.y + 10 + "px";
+   
+
+// ======================================================
+
+             
+        userimg.classList.add("userrabit");
+        userimg.src="r1.png";
+      }
+     
+     }
+
+// winner function
+
+function winning(data){
+  winner.classList.toggle("hidden");
+
+  console.log(data);
+
+  winimg.src = `${data}.png`;
+
+  spin.disabled = true;
+
+
+}
+
+// new game
+
+newbtn.addEventListener('click',()=>{
+location.reload();
+});
+
+
+    </script>
+  </body>
+</html>
